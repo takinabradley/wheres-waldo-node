@@ -10,6 +10,7 @@ import helmet from "helmet"
 import ViteExpress from "vite-express"
 // const cors = require("cors");
 import process from "node:process"
+import session from "express-session"
 
 const appDebug = debug("wheres-waldo:app")
 const viteConfigFile = path.resolve(import.meta.dirname, "../vite.config.js")
@@ -22,6 +23,23 @@ mongoose
   .catch(() => appDebug("mongoose failed to connect:\n"))
 
 const app = express()
+app.use(
+  session({
+    name: "wheres-waldo",
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      sameSite: true,
+      secure:
+        // production should be use the secure option
+        // the environment variable USE_HTTP can be set to override this for
+        // testing production builds
+        process.env.NODE_ENV === "production" &&
+        process.env.USE_HTTP !== "true",
+    },
+    resave: false,
+    saveUninitialized: false,
+  })
+)
 
 app.get("/message", (_, res) => res.send("Hello from express!!!"))
 
