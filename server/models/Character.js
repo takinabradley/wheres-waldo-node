@@ -1,9 +1,10 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const characterSchema = mongoose.Schema({
   name: String,
+  pos: [Number, Number],
 })
 
-const Character = mongoose.model(characterSchema)
+const Character = mongoose.model("Character", characterSchema)
 
-module.exports = Character
+export default Character
