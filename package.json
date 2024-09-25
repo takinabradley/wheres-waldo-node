@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --watch-path=server/ server/server.js",
+    "start": "node server/server.js",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint ."
   },
   "dependencies": {
     "eslint-config-prettier": "^9.1.0",
