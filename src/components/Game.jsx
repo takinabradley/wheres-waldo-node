@@ -4,11 +4,7 @@ import useElementWidth from "../hooks/useElementWidth"
 import Timer from "./Timer"
 import MouseHighlightArea from "./MouseHighlightArea"
 import CoordinatePlane from "./CoordinatePlane"
-
-import animalImg from "../assets/animals.jpg"
-import ghostyImg from "../assets/ghosty.png"
-import pigMouseImg from "../assets/pigmouse.png"
-import kingpigImg from "../assets/kingpig.png"
+import { useActionData, useLoaderData, useSubmit } from "react-router-dom"
 
 const useViewportWidth = () => {
   const [width, setWidth] = useState(window.innerWidth)
@@ -25,6 +21,7 @@ const useViewportWidth = () => {
 
   return width
 }
+
 export async function GameLoader({ params, request }) {
   return await (
     await fetch(window.location.origin + "/api/seek-and-find/characters")
@@ -50,8 +47,24 @@ export default function Game() {
   // const imgRef = useRef(null)
   const [imgRef, imgWidth] = useElementWidth()
   const width = useViewportWidth()
+  const characters = useLoaderData()
+  const actionData = useActionData()
+  const [foundCharacters, setFoundCharacters] = useState([])
+  const submit = useSubmit()
+  const [gameOver, setGameOver] = useState(false)
+  const [timeToFinish, setTimeToFinish] = useState(null)
 
-  console.log("image width:", imgWidth)
+  useEffect(() => {
+    if (actionData?.character) {
+      setFoundCharacters((found) => [...found, actionData.character.name])
+    }
+
+    if (actionData?.endTime) {
+      setGameOver(true)
+      setTimeToFinish(actionData.endTime)
+      setIsCounting(false)
+    }
+  }, [actionData])
 
   let characterFlexDirection
   if (width <= 450) {
@@ -60,6 +73,15 @@ export default function Game() {
     characterFlexDirection = "row"
   } else {
     characterFlexDirection = "column"
+  }
+
+  if (gameOver) {
+    return (
+      <div className="Game">
+        Finished in {timeToFinish / 1000} seconds!
+        <button onClick={() => location.reload()}>Restart</button>
+      </div>
+    )
   }
 
   return (
@@ -79,8 +101,19 @@ export default function Game() {
       >
         <CoordinatePlane
           className="Game__img-container"
-          style={{ maxWidth: "fit-content", flex: "1 1 auto" }}
-          onClick={(data) => console.log(data.percentX, data.percentY)}
+          style={{
+            maxWidth: "fit-content",
+            flex: "1 1 auto",
+            height: "fit-content",
+          }}
+          onClick={(data) => {
+            const { percentX, percentY } = data
+            submit(JSON.stringify({ percentX, percentY }), {
+              method: "post",
+              action: "/game",
+              encType: "application/json",
+            })
+          }}
         >
           <MouseHighlightArea
             highlightProps={{
@@ -95,7 +128,7 @@ export default function Game() {
             }}
           >
             <img
-              src={animalImg}
+              src={"/animals.jpg"}
               alt=""
               ref={imgRef}
               style={{ width: "100%" }}
@@ -112,41 +145,28 @@ export default function Game() {
               display: "flex",
               flexDirection: characterFlexDirection,
               justifyContent: "space-between",
+              gap: "1em",
             }}
           >
-            <div
-              className="Game__item"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img src={ghostyImg} alt="Ghosty" />
-              Ghosty
-            </div>
-            <div
-              className="Game__item"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img src={pigMouseImg} alt="Mouse-Pig" />
-              Mouse-Pig
-            </div>
-            <div
-              className="Game__item"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <img src={kingpigImg} alt="King Pig" />
-              King Pig
-            </div>
+            {characters?.map((character) => (
+              <div
+                className="Game__item"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: "1em",
+                  backgroundColor: foundCharacters.includes(character.name)
+                    ? "green"
+                    : "gray",
+                }}
+                key={character._id}
+              >
+                <img src={character.imgUrl} alt={character.name} />
+                {character.name}{" "}
+                {foundCharacters.includes(character.name) ? "- FOUND" : null}
+              </div>
+            ))}
           </div>
         </div>
 
