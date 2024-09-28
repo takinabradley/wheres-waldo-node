@@ -25,6 +25,25 @@ const useViewportWidth = () => {
 
   return width
 }
+export async function GameLoader({ params, request }) {
+  return await (
+    await fetch(window.location.origin + "/api/seek-and-find/characters")
+  ).json()
+}
+
+export async function GameAction({ params, request }) {
+  const { percentX, percentY } = await request.json()
+  const clickData = await (
+    await fetch(window.location.origin + "/api/seek-and-find/characters", {
+      method: "post",
+      body: JSON.stringify({ percentX, percentY }),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+  ).json()
+  return clickData
+}
 
 export default function Game() {
   const [isCounting, setIsCounting] = useState(true)
