@@ -4,12 +4,12 @@ import App from "./App.jsx"
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom"
 import "./index.css"
 
-import Game from "./components/Game.jsx"
+import Game, { GameAction, GameLoader } from "./components/Game.jsx"
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: "This route doesn't exist!",
+    /* errorElement: "This route doesn't exist!", */
     children: [
       {
         index: true,
@@ -17,7 +17,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/game",
+        loader: GameLoader,
+        action: GameAction,
         element: <Game />,
+        shouldRevalidate: () => false,
       },
     ],
   },
