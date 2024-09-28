@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client"
 import App from "./App.jsx"
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom"
 import "./index.css"
-import animalImg from "./assets/animals.jpg"
+
 import Game from "./components/Game.jsx"
 const router = createBrowserRouter([
   {
