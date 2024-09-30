@@ -42,7 +42,7 @@ app.use(
         process.env.USE_HTTP !== "true",
     },
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 )
 
