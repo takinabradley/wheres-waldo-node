@@ -18,6 +18,7 @@ const appDebug = debug("wheres-waldo:app")
 const viteConfigFile = path.resolve(import.meta.dirname, "../vite.config.js")
 
 if (process.env.NODE_ENV === "production") debug.disable()
+appDebug("Debug enabled, not in production mode")
 
 mongoose
   .connect(process.env.MONGO_DB_TEST_URI || process.env.MONGO_DB_URI || "")
