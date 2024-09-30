@@ -104,11 +104,7 @@ apiRouter.get("test", async (req, res, next) => {
 
 app.use("/api", apiRouter)
 
-const server = app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
-  console.log("listening on:", "0.0.0.0" + ":" + (process.env.PORT || 3000))
-})
 ViteExpress.config({ viteConfigFile })
-ViteExpress.bind(app, server)
-/* ViteExpress.listen(app, process.env.PORT || 3000, () =>
-  console.log("Server listening at http://localhost:3000")
-) */
+ViteExpress.listen(app, process.env.PORT || 3000, () => {
+  console.log("listening on port:", process.env.PORT || 3000)
+})
