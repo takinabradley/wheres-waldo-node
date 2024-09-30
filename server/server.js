@@ -98,6 +98,6 @@ apiRouter.get("/seek-and-find/characters", async (req, res, next) => {
 app.use("/api", apiRouter)
 
 ViteExpress.config({ viteConfigFile })
-ViteExpress.listen(app, 3000, () =>
+ViteExpress.listen(app, process.env.PORT || 3000, () =>
   console.log("Server listening at http://localhost:3000")
 )
