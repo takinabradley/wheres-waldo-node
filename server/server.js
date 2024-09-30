@@ -97,6 +97,11 @@ apiRouter.get("/seek-and-find/characters", async (req, res, next) => {
   res.json(characters)
 })
 
+apiRouter.get("test", async (req, res, next) => {
+  console.log(req.session)
+  res.json({ data: "returning data" })
+})
+
 app.use("/api", apiRouter)
 
 const server = app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
